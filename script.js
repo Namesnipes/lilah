@@ -5,6 +5,8 @@ let gameRunning = false;
 let foodItems = [];
 let gameSpeed = 2;
 let spawnRate = 0.02;
+let baseSpawnRate = 0.02;
+let gameStartTime = 0;
 let lilahPosition = 50; // percentage from left
 
 // DOM elements
@@ -46,14 +48,17 @@ function createFoodItem() {
     food.className = 'food-item';
     food.textContent = foodTypes[Math.floor(Math.random() * foodTypes.length)];
     
-    // Get current game area dimensions for responsive positioning
-    const gameAreaRect = gameArea.getBoundingClientRect();
-    const foodSize = Math.min(40, Math.max(30, gameAreaRect.width * 0.08)); // Responsive food size
-    const maxLeft = gameArea.offsetWidth - foodSize;
+    // Position randomly within the game area (CSS handles the size)
+    const maxLeft = gameArea.offsetWidth - 50; // Leave some margin for the food item
     
     food.style.left = Math.random() * maxLeft + 'px';
     food.style.top = '-50px';
-    food.style.animationDuration = (3 + Math.random() * 2) + 's';
+    
+    // Food falls slightly faster as time progresses (but not too fast)
+    const timeElapsed = (Date.now() - gameStartTime) / 1000;
+    const speedMultiplier = Math.max(0.7, 1 - (timeElapsed / 120)); // Gets faster over 2 minutes, min 0.7x speed
+    const fallDuration = (3 + Math.random() * 2) * speedMultiplier;
+    food.style.animationDuration = fallDuration + 's';
     
     gameArea.appendChild(food);
     foodItems.push(food);
@@ -106,11 +111,7 @@ function eatFood(food) {
     food.parentNode.removeChild(food);
     foodItems = foodItems.filter(item => item !== food);
     
-    // Increase difficulty slightly
-    if (score % 100 === 0) {
-        gameSpeed += 0.5;
-        spawnRate += 0.005;
-    }
+    // No more score-based difficulty increase - it's now time-based
 }
 
 function showScorePopup(x, y, text) {
@@ -131,6 +132,14 @@ function showScorePopup(x, y, text) {
 function gameLoop() {
     if (!gameRunning) return;
     
+    // Update difficulty based on time elapsed (gradual increase)
+    const timeElapsed = (Date.now() - gameStartTime) / 1000; // seconds
+    
+    // Gradually increase spawn rate over time (cap at 0.08 to prevent too fast)
+    // Increases by 0.01 every 30 seconds
+    const difficultyMultiplier = Math.min(1 + (timeElapsed / 30) * 0.5, 4);
+    spawnRate = Math.min(baseSpawnRate * difficultyMultiplier, 0.08);
+    
     // Spawn new food
     if (Math.random() < spawnRate) {
         createFoodItem();
@@ -144,7 +153,8 @@ function startGame() {
     lives = 3;
     gameRunning = true;
     gameSpeed = 2;
-    spawnRate = 0.02;
+    spawnRate = baseSpawnRate; // Reset to base spawn rate
+    gameStartTime = Date.now(); // Set game start time
     foodItems = [];
     
     // Clear existing food
@@ -156,7 +166,7 @@ function startGame() {
     showScreen(gameScreen);
     startButton.style.display = 'none';
     gameMessage.textContent = '"Feed me the yummy treats!" - Lilah';
-      gameLoop();
+    gameLoop();
 }
 
 function endGame() {
@@ -175,34 +185,40 @@ function endGame() {
     showScreen(partyScreen);
 }
 
-// Prevent default mobile behaviors
-document.addEventListener('touchstart', function(e) {
-    if (e.target.closest('.game-area') || e.target.closest('.food-item')) {
-        // Allow food item interactions but prevent default
-        return;
+// Prevent default mobile behaviors only in game area
+document.addEventListener('touchmove', function(e) {
+    // Only prevent scrolling in the game area
+    if (e.target.closest('.game-area')) {
+        e.preventDefault();
     }
 }, { passive: false });
 
-document.addEventListener('touchmove', function(e) {
-    // Prevent scrolling everywhere
-    e.preventDefault();
-}, { passive: false });
-
 document.addEventListener('touchend', function(e) {
-    // Prevent zooming and other gestures
-    e.preventDefault();
+    // Only prevent gestures in the game area
+    if (e.target.closest('.game-area')) {
+        e.preventDefault();
+    }
 }, { passive: false });
 
 document.addEventListener('gesturestart', function(e) {
-    e.preventDefault();
+    // Only prevent gestures in the game area
+    if (e.target.closest('.game-area')) {
+        e.preventDefault();
+    }
 });
 
 document.addEventListener('gesturechange', function(e) {
-    e.preventDefault();
+    // Only prevent gestures in the game area
+    if (e.target.closest('.game-area')) {
+        e.preventDefault();
+    }
 });
 
 document.addEventListener('gestureend', function(e) {
-    e.preventDefault();
+    // Only prevent gestures in the game area
+    if (e.target.closest('.game-area')) {
+        e.preventDefault();
+    }
 });
 
 // Event listeners

@@ -1,20 +1,11 @@
 /* Prevent mobile interactions */
 * {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
     -webkit-tap-highlight-color: transparent;
 }
 
 html, body {
-    overflow: hidden;
-    position: fixed;
     width: 100%;
     height: 100%;
-    touch-action: none;
     -webkit-overflow-scrolling: touch;
 }
 
@@ -76,6 +67,10 @@ h1 {
     touch-action: none;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
     overscroll-behavior: none;
 }
 
@@ -98,11 +93,11 @@ h1 {
 
 .food-item {
     position: absolute;
-    width: clamp(30px, 8vw, 40px);
-    height: clamp(30px, 8vw, 40px);
+    width: clamp(30px, 8vw, 60px);
+    height: clamp(30px, 8vw, 60px);
     border-radius: 50%;
     cursor: pointer;
-    font-size: clamp(20px, 6vw, 30px);
+    font-size: clamp(30px, 8vw, 60px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -117,7 +112,7 @@ h1 {
         top: -50px;
     }
     to {
-        top: 450px;
+        top: calc(100% + 50px);
     }
 }
 
