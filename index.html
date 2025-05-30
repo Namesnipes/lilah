@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Lilah!!!</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>    <div class="container">
+        <!-- Intro Screen -->
+        <div id="introScreen">
+            <h1>It's Lilah's Birthday! 😺</h1>
+            <p class="intro-text">Help her eat as many treats as she can before her party ends!</p>
+            <button id="startGameButton">Treat time!</button>
+        </div>
+        
+        <!-- Game Screen -->
+        <div id="gameScreen" style="display:none;">
+            <h1>Catch the treats!!!</h1>        <div class="game-stats">
+                <p>Score: <span id="score">0</span> | Lives: <span id="lives">3</span></p>
+                <p id="gameMessage">"Please feed me" - Lilah</p>
+            </div>
+            <div class="game-area" id="gameArea">
+                <img id="lilahImage" src="closed.png" alt="Lilah the cat" title="Hungry Lilah!">
+            </div>
+            <div class="game-controls">
+                <button id="startButton" style="display:none;">Start Game</button>
+                <button id="pauseButton" style="display:none;">Pause</button>
+                <button id="backToIntroButton">Back to Start</button>
+            </div>
+        </div>
+        
+        <!-- Party End Screen -->
+        <div id="partyScreen" style="display:none;">
+            <div class="party-container">
+                <img id="partyImage" src="party.png" alt="Party Lilah" class="party-animation">
+                <h1 class="party-text">Happy Birthday Lilah! 🎂</h1>
+                <p class="final-score">Final Score: <span id="finalScore">0</span></p>
+                <p class="party-message">"thanks for the treats! yummy yum yum"</p>
+                <button id="playAgainButton">Play Again</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
