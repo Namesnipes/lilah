@@ -2,7 +2,6 @@
 let score = 0;
 let lives = 3;
 let gameRunning = false;
-let gamePaused = false;
 let foodItems = [];
 let gameSpeed = 2;
 let spawnRate = 0.02;
@@ -18,8 +17,6 @@ const scoreElement = document.getElementById('score');
 const livesElement = document.getElementById('lives');
 const startGameButton = document.getElementById('startGameButton');
 const startButton = document.getElementById('startButton');
-const pauseButton = document.getElementById('pauseButton');
-const backToIntroButton = document.getElementById('backToIntroButton');
 const playAgainButton = document.getElementById('playAgainButton');
 const gameMessage = document.getElementById('gameMessage');
 const finalScoreElement = document.getElementById('finalScore');
@@ -132,7 +129,7 @@ function showScorePopup(x, y, text) {
 }
 
 function gameLoop() {
-    if (!gameRunning || gamePaused) return;
+    if (!gameRunning) return;
     
     // Spawn new food
     if (Math.random() < spawnRate) {
@@ -146,7 +143,6 @@ function startGame() {
     score = 0;
     lives = 3;
     gameRunning = true;
-    gamePaused = false;
     gameSpeed = 2;
     spawnRate = 0.02;
     foodItems = [];
@@ -159,19 +155,8 @@ function startGame() {
     updateDisplay();
     showScreen(gameScreen);
     startButton.style.display = 'none';
-    pauseButton.style.display = 'inline-block';
     gameMessage.textContent = '"Feed me the yummy treats!" - Lilah';
-    
-    gameLoop();
-}
-
-function pauseGame() {
-    gamePaused = !gamePaused;
-    pauseButton.textContent = gamePaused ? 'Resume' : 'Pause';
-    
-    if (!gamePaused) {
-        gameLoop();
-    }
+      gameLoop();
 }
 
 function endGame() {
@@ -190,26 +175,39 @@ function endGame() {
     showScreen(partyScreen);
 }
 
-function backToIntro() {
-    gameRunning = false;
-    gamePaused = false;
-    
-    // Clear any remaining food
-    foodItems.forEach(food => {
-        if (food.parentNode) {
-            food.parentNode.removeChild(food);
-        }
-    });
-    foodItems = [];
-    
-    showScreen(introScreen);
-}
+// Prevent default mobile behaviors
+document.addEventListener('touchstart', function(e) {
+    if (e.target.closest('.game-area') || e.target.closest('.food-item')) {
+        // Allow food item interactions but prevent default
+        return;
+    }
+}, { passive: false });
+
+document.addEventListener('touchmove', function(e) {
+    // Prevent scrolling everywhere
+    e.preventDefault();
+}, { passive: false });
+
+document.addEventListener('touchend', function(e) {
+    // Prevent zooming and other gestures
+    e.preventDefault();
+}, { passive: false });
+
+document.addEventListener('gesturestart', function(e) {
+    e.preventDefault();
+});
+
+document.addEventListener('gesturechange', function(e) {
+    e.preventDefault();
+});
+
+document.addEventListener('gestureend', function(e) {
+    e.preventDefault();
+});
 
 // Event listeners
 startGameButton.addEventListener('click', startGame);
 startButton.addEventListener('click', startGame);
-pauseButton.addEventListener('click', pauseGame);
-backToIntroButton.addEventListener('click', backToIntro);
 playAgainButton.addEventListener('click', () => {
     showScreen(introScreen);
 });
